@@ -1,0 +1,83 @@
+* {
+  margin:0;
+  padding:0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+form {
+
+  max-width: 400px;
+  display:flex;
+  flex-direction: column;
+  gap:0.5rem;
+}
+
+
+form p {
+  color: red;
+}
+
+
+
+.App {
+  display: flex;
+min-height: 100vh;
+}
+
+.left {
+  width: 25%;
+  display: flex;
+  justify-content: center;
+align-items: center;
+  flex-direction: column;
+}
+
+.left-inner {
+width: 80%;
+display: flex;
+flex-direction: column;
+justify-content: space-around;
+height: 100%;
+}
+
+.left-inner h1 {
+
+  font-size:2.375rem;
+  text-transform: uppercase;
+  color: #FF8000 ;
+  line-height: 1;
+  font-weight: 900;
+}
+
+.left-inner h2 {
+  margin-bottom: 1.25rem;
+  font-weight: 500;
+}
+
+.right {
+flex: 1;
+overflow: hidden;
+}
+
+.right img {
+  min-height: 100%;
+  min-width: 100%;
+
+}
+
+.logo {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+
+  width: min-content;
+  margin: 0 auto;
+}
+
+.logo img {
+height: 76px;
+}
