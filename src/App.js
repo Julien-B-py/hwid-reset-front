@@ -1,4 +1,4 @@
-import { useState, useEffect, forwardRef, useRef } from "react";
+import { useState, useEffect, useLayoutEffect, forwardRef, useRef } from "react";
 import { gsap } from "gsap";
 
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
@@ -51,21 +51,42 @@ function App() {
   const tl = useRef();
 
   // Elements animation
-  useEffect(() => {
-    tl.current = gsap
-      .timeline()
-      .from(leftRef.current, {
-        width: 0,
-        delay: 1.5,
-        ease: "Circ.easeOut",
-        duration: 0.8
-      })
-      .from(q(".left-inner-child"), {
-        yPercent: -100,
-        autoAlpha: 0,
-        stagger: 0.2,
-        ease: "Back.easeOut"
-      });
+  useLayoutEffect(() => {
+
+
+var desktop = window.matchMedia('(min-width: 640px)').matches;
+
+if(desktop) {
+  tl.current = gsap
+    .timeline()
+    .from(leftRef.current, {
+      width: 0,
+      delay: 1.5,
+      ease: "Circ.easeOut",
+      duration: 0.8
+    })
+    .set(leftRef.current, {clearProps: "width"})
+    .from(q(".left-inner-child"), {
+      yPercent: -100,
+      autoAlpha: 0,
+      stagger: 0.2,
+      ease: "Back.easeOut"
+    });
+} else {
+  tl.current = gsap
+    .timeline()
+    .from(q(".left-inner-child"), {
+      yPercent: -100,
+      autoAlpha: 0,
+      stagger: 0.2,
+      ease: "Back.easeOut",
+      delay: 0.5,
+    }).set(leftRef.current, {clearProps: "width"});
+}
+
+
+
+
   }, []);
 
   const handleChange = (e) => {
@@ -114,6 +135,9 @@ function App() {
 
             <div>
               <h2 className="left-inner-child">HWID Reset</h2>
+
+
+
               <form>
                 {userInputs.map((userInput, index) => (
                   <TextField
@@ -149,6 +173,8 @@ function App() {
               <ArrowForwardIcon />
             </Button>
 
+
+
             <ButtonsGroup />
 
             <Footer />
@@ -167,7 +193,9 @@ function App() {
       </div>
 
       <div className="right">
+
         <img src={images.bg} alt="background" />
+
       </div>
     </div>
   );
