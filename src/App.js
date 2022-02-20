@@ -1,24 +1,70 @@
-import { useState } from "react";
+import { useState, useEffect, forwardRef, useRef } from "react";
 import axios from "axios";
-
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
+import { gsap } from "gsap";
 
 import { styled } from "@mui/material/styles";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
+import Snackbar from "@mui/material/Snackbar";
+import TextField from "@mui/material/TextField";
+import MuiAlert from "@mui/material/Alert";
 
 import bg from "./bg.jpg";
 import logo from "./logo.png";
-
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import CircularProgress from "@mui/material/CircularProgress";
-
 import "./App.css";
 
 function App() {
   const [input, setInput] = useState({ token: "", prevHWID: "", newHWID: "" });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  const [operation, setOperation] = useState("error");
+  const [disableButton, setDisableButton] = useState(true);
   const [loading, setLoading] = useState(false);
+
+  const currentYear = new Date().getFullYear();
+
+  const Alert = forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
+
+  useEffect(() => {
+    if (input.token && input.prevHWID && input.newHWID) {
+      setDisableButton(false);
+    } else {
+      setDisableButton(true);
+    }
+  }, [input]);
+
+  useEffect(() => {
+    error && setOperation("error");
+  }, [error]);
+
+  useEffect(() => {
+    success && setOperation("success");
+  }, [success]);
+
+  const leftRef = useRef();
+  const q = gsap.utils.selector(leftRef);
+  const tl = useRef();
+
+  useEffect(() => {
+    tl.current = gsap
+      .timeline()
+      .from(leftRef.current, {
+        width: 0,
+        delay: 1.5,
+        ease: "Circ.easeOut",
+        duration: 1.3
+      })
+      .from(q(".left-inner-child"), {
+        yPercent: -100,
+        autoAlpha: 0,
+        stagger: 0.2,
+        ease: "Back.easeOut"
+      });
+  }, []);
 
   async function editHWID() {
     try {
@@ -42,6 +88,11 @@ function App() {
     setInput((prevState) => ({ ...prevState, [name]: value }));
   }
 
+  function handleSnackbarClose() {
+    setError("");
+    setSuccess("");
+  }
+
   async function send(e) {
     e.preventDefault();
     setLoading(true);
@@ -60,25 +111,31 @@ function App() {
 
   return (
     <div className="App">
-      <div className="left">
+      <div className="left" ref={leftRef}>
         {loading ? (
           <CircularProgress sx={{ color: "#FF8000" }} size={70} />
         ) : (
           <div className="left-inner">
-
-<div className="logo">
-  <img src={logo} />
-  <h1>VECR Project</h1>
-</div>
-
+            <div className="logo left-inner-child">
+              <img src={logo} />
+              <h1>VECR Project</h1>
+            </div>
 
             <div>
-              <h2>HWID Reset</h2>
+              <h2 className="left-inner-child">HWID Reset</h2>
               <form>
-                {error && <p>{error}</p>}
-                {success && <p>{success}</p>}
+                <Snackbar
+                  open={error || success ? true : false}
+                  autoHideDuration={4500}
+                  onClose={() => handleSnackbarClose()}
+                >
+                  <Alert severity={operation} sx={{ width: "100%" }}>
+                    {error || success}
+                  </Alert>
+                </Snackbar>
 
                 <TextField
+                  className="left-inner-child"
                   label="Token"
                   variant="standard"
                   name="token"
@@ -90,6 +147,7 @@ function App() {
                 />
 
                 <TextField
+                  className="left-inner-child"
                   label="Previous HWID"
                   variant="standard"
                   name="prevHWID"
@@ -99,6 +157,7 @@ function App() {
                 />
 
                 <TextField
+                  className="left-inner-child"
                   label="New HWID"
                   variant="standard"
                   name="newHWID"
@@ -112,6 +171,7 @@ function App() {
 
             <Button
               variant="contained"
+              className="left-inner-child"
               onClick={(e) => send(e)}
               style={{
                 backgroundColor: "#FF8000",
@@ -120,22 +180,64 @@ function App() {
                 borderRadius: 20,
                 margin: "0 auto"
               }}
+              disabled={disableButton}
             >
               <ArrowForwardIcon />
             </Button>
 
+            <div className="buttons left-inner-child">
+              <Button
+                style={{
+                  backgroundColor: "#000",
+                  width: "64px",
+                  height: "32px",
+                  borderRadius: 10,
+                  alignSelf: "flex-end"
+                }}
+                onClick={() =>
+                  window.open("https://github.com/ProbablyXS", "_blank")
+                }
+              >
+                <i
+                  className="fa-brands fa-github"
+                  style={{ color: "#fff" }}
+                ></i>
+              </Button>
 
-            <Button                 style={{
-                            backgroundColor: "#5662F6",
-                            width: "64px",
-                                            borderRadius: 10,
+              <Button
+                style={{
+                  backgroundColor: "#5662F6",
+                  width: "64px",
+                  height: "32px",
+                  borderRadius: 10
+                }}
+                onClick={() =>
+                  window.open("https://discord.com/invite/arApVweA8y", "_blank")
+                }
+              >
+                <i
+                  className="fa-brands fa-discord"
+                  style={{ color: "#fff" }}
+                ></i>
+              </Button>
+            </div>
 
-                          }}         >
-<i className="fa-brands fa-discord" style={{color:'#fff'}}></i>
-            </Button>
-
-
-
+            <footer className="left-inner-child">
+              <div className="footer-text">
+                <div>
+                  ©{currentYear === 2020 ? currentYear : `2020-${currentYear}`},{" "}
+                  <a href="http://www.vecrproject.com/">VECR</a>.
+                </div>
+                Made with ♥️ by{" "}
+                <a
+                  className="footer-link"
+                  href="https://github.com/Julien-B-py"
+                >
+                  {" Julien B. "}
+                  <i className="fab fa-github"></i>
+                </a>
+              </div>
+            </footer>
           </div>
         )}
       </div>
