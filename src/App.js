@@ -27,6 +27,7 @@ function App() {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
 
+  // Enable or disable submit button depending on input props values
   useEffect(() => {
     if (input.token && input.prevHWID && input.newHWID) {
       setDisableButton(false);
@@ -35,10 +36,12 @@ function App() {
     }
   }, [input]);
 
+  // If error set operation to "error" so the Snackbar alert is displayed with the red color
   useEffect(() => {
     error && setOperation("error");
   }, [error]);
 
+  // If success set operation to "success" so the Snackbar alert is displayed with the green color
   useEffect(() => {
     success && setOperation("success");
   }, [success]);
@@ -47,6 +50,7 @@ function App() {
   const q = gsap.utils.selector(leftRef);
   const tl = useRef();
 
+  // Elements animation
   useEffect(() => {
     tl.current = gsap
       .timeline()
@@ -67,14 +71,14 @@ function App() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setInput((prevState) => ({ ...prevState, [name]: value }));
-  }
+  };
 
   const handleSnackbarClose = () => {
     setError("");
     setSuccess("");
-  }
+  };
 
-  const submitData = async(e) => {
+  const submitData = async (e) => {
     e.preventDefault();
     setLoading(true);
     // Delay operation to allow CircularProgress to be displayed for a while
@@ -88,7 +92,13 @@ function App() {
         setLoading(false);
       });
     }, 800);
-  }
+  };
+
+  const userInputs = [
+    { label: "Token", name: "token", value: input.token },
+    { label: "Previous HWID", name: "prevHWID", value: input.prevHWID },
+    { label: "New HWID", name: "newHWID", value: input.newHWID }
+  ];
 
   return (
     <div className="App">
@@ -105,49 +115,21 @@ function App() {
             <div>
               <h2 className="left-inner-child">HWID Reset</h2>
               <form>
-                <Snackbar
-                  open={error || success ? true : false}
-                  autoHideDuration={4500}
-                  onClose={() => handleSnackbarClose()}
-                >
-                  <Alert severity={operation} sx={{ width: "100%" }}>
-                    {error || success}
-                  </Alert>
-                </Snackbar>
-
-                <TextField
-                  className="left-inner-child"
-                  label="Token"
-                  variant="standard"
-                  name="token"
-                  value={input.token}
-                  onChange={(e) => handleChange(e)}
-                  required
-                  helperText="Numbers only"
-                  color="warning"
-                />
-
-                <TextField
-                  className="left-inner-child"
-                  label="Previous HWID"
-                  variant="standard"
-                  name="prevHWID"
-                  value={input.prevHWID}
-                  onChange={(e) => handleChange(e)}
-                  required
-                  color="warning"
-                />
-
-                <TextField
-                  className="left-inner-child"
-                  label="New HWID"
-                  variant="standard"
-                  name="newHWID"
-                  value={input.newHWID}
-                  onChange={(e) => handleChange(e)}
-                  required
-                  color="warning"
-                />
+                {userInputs.map((userInput, index) => (
+                  <TextField
+                    key={index}
+                    className="left-inner-child"
+                    label={userInput.label}
+                    variant="standard"
+                    name={userInput.name}
+                    value={userInput.value}
+                    onChange={(e) => handleChange(e)}
+                    required
+                    color="warning"
+                    error={error ? true : false}
+                    helperText={error && "Incorrect entry."}
+                  />
+                ))}
               </form>
             </div>
 
@@ -170,6 +152,16 @@ function App() {
             <ButtonsGroup />
 
             <Footer />
+
+            <Snackbar
+              open={error || success ? true : false}
+              autoHideDuration={4500}
+              onClose={() => handleSnackbarClose()}
+            >
+              <Alert severity={operation} sx={{ width: "100%" }}>
+                {error || success}
+              </Alert>
+            </Snackbar>
           </div>
         )}
       </div>
