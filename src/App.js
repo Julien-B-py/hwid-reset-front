@@ -23,13 +23,20 @@ import { images } from "./constants";
 import "./App.css";
 
 function App() {
+  // User inputs
   const [input, setInput] = useState({ token: "", prevHWID: "", newHWID: "" });
+  // Error message
   const [error, setError] = useState("");
+  // Success message
   const [success, setSuccess] = useState("");
+  // Result of the operation (error for example)
   const [operation, setOperation] = useState("");
+  // Disable submit button
   const [disableButton, setDisableButton] = useState(true);
+  // Display loading animation
   const [loading, setLoading] = useState(false);
 
+  // Customized component : https://mui.com/components/snackbars/
   const Alert = forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
@@ -58,13 +65,15 @@ function App() {
   const tl = useRef();
 
   // client-side only rendering : noSsr to true
+  // https://mui.com/components/use-media-query/#main-content
   const desktop = useMediaQuery("(min-width:640px)", { noSsr: true });
   const mobileHorizontal = useMediaQuery("(max-height: 430px)", {
     noSsr: true
   });
 
-  // Elements animation (only once)
+  // Elements animation (only on first render)
   useLayoutEffect(() => {
+    // Specific animation if displayed on desktop
     if (desktop && !mobileHorizontal) {
       tl.current = gsap
         .timeline()
@@ -81,6 +90,7 @@ function App() {
           stagger: 0.2,
           ease: "Back.easeOut"
         });
+      // Specific animation if displayed on mobile
     } else {
       tl.current = gsap
         .timeline()
@@ -95,16 +105,19 @@ function App() {
     }
   }, []);
 
+  // Handle user input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setInput((prevState) => ({ ...prevState, [name]: value }));
   };
 
+  // Handle snackbar open prop value
   const handleSnackbarClose = () => {
     setError("");
     setSuccess("");
   };
 
+  // Submit user data when button is clicked
   const submitData = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -121,6 +134,7 @@ function App() {
     }, 800);
   };
 
+  // Array of userInputs that will be displayed in the form
   const userInputs = [
     { label: "Token", name: "token", value: input.token },
     { label: "Previous HWID", name: "prevHWID", value: input.prevHWID },

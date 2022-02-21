@@ -1,3 +1,4 @@
+// Buttons that will be displayed under submit button
 const buttons = [
   {
     icon: "github",

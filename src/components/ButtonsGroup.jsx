@@ -2,6 +2,7 @@ import Button from "@mui/material/Button";
 
 import buttons from "../constants/buttons";
 
+// Buttons displayed under submit button
 const ButtonsGroup = () => {
   return (
     <div className="buttons left-inner-child">

@@ -6,7 +6,6 @@
 
 body {
   font-family: 'Roboto', sans-serif;
-  overflow: hidden;
 }
 
 form {
@@ -16,9 +15,6 @@ form {
   gap: 0.5rem;
 }
 
-form p {
-  color: red;
-}
 
 footer {
   text-align: center;
@@ -115,6 +111,6 @@ footer a {
 
   .right {
     background-position-x: 0;
-    background-size: 180%;
+    background-size: 195%;
   }
 }
