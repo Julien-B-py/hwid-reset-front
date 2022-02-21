@@ -1,6 +1,13 @@
-import { useState, useEffect, useLayoutEffect, forwardRef, useRef } from "react";
+import {
+  useState,
+  useEffect,
+  useLayoutEffect,
+  forwardRef,
+  useRef
+} from "react";
 import { gsap } from "gsap";
 
+import useMediaQuery from "@mui/material/useMediaQuery";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -50,43 +57,42 @@ function App() {
   const q = gsap.utils.selector(leftRef);
   const tl = useRef();
 
-  // Elements animation
+  // client-side only rendering : noSsr to true
+  const desktop = useMediaQuery("(min-width:640px)", { noSsr: true });
+  const mobileHorizontal = useMediaQuery("(max-height: 430px)", {
+    noSsr: true
+  });
+
+  // Elements animation (only once)
   useLayoutEffect(() => {
-
-
-var desktop = window.matchMedia('(min-width: 640px)').matches;
-
-if(desktop) {
-  tl.current = gsap
-    .timeline()
-    .from(leftRef.current, {
-      width: 0,
-      delay: 1.5,
-      ease: "Circ.easeOut",
-      duration: 0.8
-    })
-    .set(leftRef.current, {clearProps: "width"})
-    .from(q(".left-inner-child"), {
-      yPercent: -100,
-      autoAlpha: 0,
-      stagger: 0.2,
-      ease: "Back.easeOut"
-    });
-} else {
-  tl.current = gsap
-    .timeline()
-    .from(q(".left-inner-child"), {
-      yPercent: -100,
-      autoAlpha: 0,
-      stagger: 0.2,
-      ease: "Back.easeOut",
-      delay: 0.5,
-    }).set(leftRef.current, {clearProps: "width"});
-}
-
-
-
-
+    if (desktop && !mobileHorizontal) {
+      tl.current = gsap
+        .timeline()
+        .from(leftRef.current, {
+          width: 0,
+          delay: 1.5,
+          ease: "Circ.easeOut",
+          duration: 0.8
+        })
+        .set(leftRef.current, { clearProps: "width" })
+        .from(q(".left-inner-child"), {
+          yPercent: -100,
+          autoAlpha: 0,
+          stagger: 0.2,
+          ease: "Back.easeOut"
+        });
+    } else {
+      tl.current = gsap
+        .timeline()
+        .from(q(".left-inner-child"), {
+          yPercent: -100,
+          autoAlpha: 0,
+          stagger: 0.2,
+          ease: "Back.easeOut",
+          delay: 0.5
+        })
+        .set(leftRef.current, { clearProps: "width" });
+    }
   }, []);
 
   const handleChange = (e) => {
@@ -136,8 +142,6 @@ if(desktop) {
             <div>
               <h2 className="left-inner-child">HWID Reset</h2>
 
-
-
               <form>
                 {userInputs.map((userInput, index) => (
                   <TextField
@@ -166,18 +170,18 @@ if(desktop) {
                 width: "64px",
                 height: "64px",
                 borderRadius: 20,
-                margin: "0 auto"
+                margin: "0 auto",
+                position: mobileHorizontal ? "absolute" : "relative",
+                right: 0
               }}
               disabled={disableButton}
             >
               <ArrowForwardIcon />
             </Button>
 
+            {!mobileHorizontal && <ButtonsGroup />}
 
-
-            <ButtonsGroup />
-
-            <Footer />
+            {!mobileHorizontal && <Footer />}
 
             <Snackbar
               open={error || success ? true : false}
@@ -192,11 +196,10 @@ if(desktop) {
         )}
       </div>
 
-      <div className="right">
-
-        <img src={images.bg} alt="background" />
-
-      </div>
+      <div
+        className="right"
+        style={{ backgroundImage: `url(${images.bg})` }}
+      ></div>
     </div>
   );
 }

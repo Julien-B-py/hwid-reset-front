@@ -33,6 +33,7 @@ footer a {
 .App {
   display: flex;
   min-height: 100vh;
+  min-width: 100vw;
 }
 
 .left {
@@ -50,6 +51,7 @@ footer a {
   flex-direction: column;
   justify-content: space-around;
   height: 100%;
+  position: relative;
 }
 
 .left-inner h1 {
@@ -68,6 +70,7 @@ footer a {
 .right {
   overflow: hidden;
   display: none;
+  background-size: cover;
 }
 
 .right img {
@@ -97,11 +100,21 @@ footer a {
   .right {
     flex-grow: 1;
     display: inline;
+    background-position-x: 15%;
+  }
+
+  .left {
+    width: 50%;
   }
 }
 
 @media screen and (min-width: 1281px) {
   .left {
     width: 25%;
+  }
+
+  .right {
+    background-position-x: 0;
+    background-size: 180%;
   }
 }
