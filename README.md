@@ -1,3 +1,11 @@
+# HWID Reset
+
+This project was about building a **React app** for a friend project.
+
+![alt text](https://i.imgur.com/Er17i1v.png)
+
+Deployed and hosted version available here: [https://julien-b-py.github.io/hwid-reset-front/](https://julien-b-py.github.io/hwid-reset-front/)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
